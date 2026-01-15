@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculadora de emissão de CO2 para viagens">
+    <title>Calculadora de Emissão de CO2</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 Calculadora de Emissão de CO2</h1>
+            <p class="subtitle">Calcule o impacto ambiental da sua viagem</p>
+        </header>
+
+        <main>
+            <form id="calculatorForm">
+                <div class="map-section">
+                    <h2>📍 Selecione sua Rota</h2>
+                    
+                    <div class="location-inputs">
+                        <div class="form-group">
+                            <label for="origin">🟢 Ponto de Partida:</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="origin" name="origin" placeholder="Digite a cidade de origem" autocomplete="off" required>
+                                <div class="autocomplete-suggestions" id="originSuggestions"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="destination">🔴 Destino:</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="destination" name="destination" placeholder="Digite a cidade de destino" autocomplete="off" required>
+                                <div class="autocomplete-suggestions" id="destinationSuggestions"></div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-search" id="searchRoute">🔍 Buscar Rota</button>
+                    </div>
+
+                    <div id="map"></div>
+                    
+                    <div class="route-info hidden" id="routeInfo">
+                        <p>📏 <strong>Distância:</strong> <span id="routeDistance">0</span> km</p>
+                        <p>⏱️ <strong>Tempo estimado (carro):</strong> <span id="routeDuration">0</span></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passengers">👥 Número de Passageiros (para veículos pessoais):</label>
+                    <input type="number" id="passengers" name="passengers" min="1" value="1" placeholder="Ex: 2">
+                    <small>A emissão de carros e motos será dividida pelo número de passageiros</small>
+                </div>
+
+                <button type="submit" class="btn-calculate">Calcular Emissões</button>
+            </form>
+
+            <div id="result" class="result hidden">
+                <h2>📊 Comparação de Emissões por Meio de Transporte</h2>
+                <div class="trip-summary">
+                    <p><strong>De:</strong> <span id="summaryOrigin"></span></p>
+                    <p><strong>Para:</strong> <span id="summaryDestination"></span></p>
+                    <p><strong>Distância:</strong> <span id="summaryDistance"></span> km</p>
+                    <p><strong>Passageiros:</strong> <span id="summaryPassengers"></span></p>
+                </div>
+
+                <div id="transportResults" class="transport-results">
+                    <!-- Os resultados serão inseridos aqui dinamicamente -->
+                </div>
+
+                <div class="best-option">
+                    <h3>🌿 Melhor Opção Ambiental</h3>
+                    <div id="bestTransport" class="best-transport-card">
+                        <!-- A melhor opção será exibida aqui -->
+                    </div>
+                </div>
+
+                <button type="button" class="btn-reset" onclick="resetCalculator()">Nova Consulta</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>Calculadora educacional - Valores são estimativas médias</p>
+            <p>Desenvolvido com 💚 para um planeta mais sustentável</p>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

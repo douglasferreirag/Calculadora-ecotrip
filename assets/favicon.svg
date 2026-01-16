@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <style>
+      .eco-bg { fill: #16b78a; }
+      .eco-leaf { fill: white; }
+      .eco-circle { fill: #0e9a6b; }
+    </style>
+  </defs>
+  <!-- Fundo circular verde -->
+  <circle cx="128" cy="128" r="120" class="eco-bg"/>
+  <!-- Círculo mais escuro -->
+  <circle cx="128" cy="128" r="100" class="eco-circle"/>
+  <!-- Folha estilizada -->
+  <path class="eco-leaf" d="M128 60c0 0 20-10 30 10c10 20 5 40-15 50c-20 10-35 5-45-15c-10-20-5-40 30-45z"/>
+  <path class="eco-leaf" d="M128 140c0 0-20 10-30-10c-10-20-5-40 15-50c20-10 35-5 45 15c10 20 5 40-30 45z"/>
+  <!-- CO2 estilizado (letras) -->
+  <text x="128" y="180" font-size="48" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">CO₂</text>
+</svg>

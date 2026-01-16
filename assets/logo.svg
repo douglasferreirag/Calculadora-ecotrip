@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" width="200" height="120">
+  <defs>
+    <style>
+      .leaf { fill: #16b78a; }
+      .leaf-dark { fill: #0e9a6b; }
+      .text-main { font-family: Arial, sans-serif; font-weight: bold; font-size: 24px; fill: #111827; }
+      .text-eco { font-family: Arial, sans-serif; font-size: 14px; fill: #6b7280; letter-spacing: 2px; }
+    </style>
+  </defs>
+  
+  <!-- Folha decorativa grande -->
+  <ellipse cx="30" cy="40" rx="18" ry="28" fill="none" stroke="#16b78a" stroke-width="3" transform="rotate(-35 30 40)"/>
+  <path class="leaf" d="M30 15 Q40 30 30 55 Q20 30 30 15" opacity="0.8"/>
+  
+  <!-- Folha decorativa pequena -->
+  <path class="leaf-dark" d="M160 20 Q170 30 160 45 Q150 30 160 20" opacity="0.6"/>
+  
+  <!-- Títulos -->
+  <text x="55" y="45" class="text-main">Calculadora</text>
+  <text x="55" y="70" class="text-main" font-size="20">Eco Trip</text>
+  
+  <!-- Subtítulo -->
+  <text x="55" y="100" class="text-eco">Emissões de CO₂</text>
+  
+  <!-- Ícone pequeno de planeta -->
+  <circle cx="185" cy="100" r="12" fill="none" stroke="#16b78a" stroke-width="1.5"/>
+  <circle cx="185" cy="100" r="8" fill="#16b78a" opacity="0.3"/>
+</svg>

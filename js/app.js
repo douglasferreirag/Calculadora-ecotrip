@@ -11,8 +11,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const routeButton = document.getElementById('route-button');
   const calcButton = document.getElementById('calc-button');
 
-  // Estado
+  // ===== ESTADO =====
   let routeCalculated = false;
+
+  // ===== FUNÇÕES AUXILIARES =====
+  function enableEmissionsCalculation() {
+    routeCalculated = true;
+    calcButton.disabled = false;
+  }
+
+  function resetRouteState() {
+    routeCalculated = false;
+    calcButton.disabled = true;
+    routeButton.disabled = false;
+    routeButton.textContent = 'Calcular rota';
+  }
 
   // ===== TRANSPORTE =====
   document.querySelectorAll('.transport-option').forEach(btn => {
@@ -21,36 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ===== ALTERAÇÃO DE ORIGEM / DESTINO =====
+  originInput.addEventListener('input', resetRouteState);
+  destinationInput.addEventListener('input', resetRouteState);
+
   // ===== DISTÂNCIA MANUAL =====
   manualCheckbox.addEventListener('change', e => {
     const manual = e.target.checked;
     ui.toggleManualDistance(manual);
 
     if (manual) {
-      routeCalculated = true;
-      calcButton.disabled = false;
-      routeButton.disabled = true;
+      enableEmissionsCalculation();
     } else {
       distanceInput.value = '';
-      routeCalculated = false;
-      calcButton.disabled = true;
-      routeButton.disabled = false;
-      routeButton.textContent = 'Calcular rota';
+      resetRouteState();
     }
-  });
-
-  distanceInput.addEventListener('input', e => {
-    ui.setDistance(e.target.value);
-  });
-
-  // Sempre que mudar origem/destino, libera recálculo
-  [originInput, destinationInput].forEach(input => {
-    input.addEventListener('input', () => {
-      routeCalculated = false;
-      calcButton.disabled = true;
-      routeButton.disabled = false;
-      routeButton.textContent = 'Calcular rota';
-    });
   });
 
   // ===== CALCULAR ROTA =====
@@ -63,35 +61,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 🔒 Proteção crítica
-    if (!window.distanceApi || typeof distanceApi.getDistance !== 'function') {
-      alert(
-        'Serviço de rota indisponível.\n' +
-        'Abra o projeto via http://localhost (não file://).'
-      );
-      return;
-    }
-
     try {
       ui.showLoader();
 
       const km = await distanceApi.getDistance(origin, destination);
 
-      if (!km || km <= 0) {
-        throw new Error('Distância inválida');
-      }
-
       ui.updateFormValues(origin, destination, km);
 
-      routeCalculated = true;
-      calcButton.disabled = false;
+      enableEmissionsCalculation();
 
       routeButton.textContent = 'Rota calculada ✓';
       routeButton.disabled = true;
 
     } catch (err) {
-      console.error('Erro rota:', err);
-      alert(err.message || 'Erro ao calcular rota');
+      console.error(err);
+      alert('Erro ao calcular rota');
     } finally {
       ui.hideLoader();
     }
@@ -119,5 +103,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== ESTADO INICIAL =====
   calcButton.disabled = true;
-  ui.updateResults();
 });

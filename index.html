@@ -1,239 +1,162 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora Eco Trip - Emissões de CO2</title>
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Eco Trip - Emissões de CO₂</title>
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
+
+  <!-- ========== HEADER ========== -->
   <header>
     <div class="container">
       <div class="header-content">
-        <img src="assets/logo.svg" alt="Calculadora Eco Trip" class="header-logo">
+        <img src="assets/logo.svg" alt="Calculadora Eco Trip" class="header-logo" />
         <h1>Calculadora Eco Trip</h1>
       </div>
     </div>
   </header>
 
-  <!-- Banner de aviso caso Google Maps/Places não carregue -->
-  <div id="maps-error-banner" style="display:none; background:#fff3cd; border:1px solid #ffeeba; color:#856404; padding:10px; text-align:center;">
-    <strong>Aviso:</strong> Google Maps/Places não carregou. Sugestões: verifique sua chave de API e restrições de referrer.
-    <button id="maps-error-dismiss" style="margin-left:12px; padding:4px 8px;">Fechar</button>
-  </div>
-
   <main class="container">
-    <!-- ========== FORMULÁRIO ==========-->
+
+    <!-- ========== FORMULÁRIO ========== -->
     <section class="form-section">
       <h2>Calcular Emissões</h2>
 
       <div class="form-group">
         <label for="origin-input">Origem</label>
-        <input type="text" id="origin-input" placeholder="Ex: São Paulo, SP" value="São Paulo, SP">
+        <input
+          type="text"
+          id="origin-input"
+          placeholder="São Paulo, SP"
+        />
       </div>
 
       <div class="form-group">
         <label for="destination-input">Destino</label>
-        <input type="text" id="destination-input" placeholder="Ex: Rio de Janeiro, RJ" value="Rio de Janeiro, RJ">
+        <input
+          type="text"
+          id="destination-input"
+          placeholder="Rio de Janeiro, RJ"
+        />
       </div>
 
       <div class="form-group">
         <label for="distance-input">Distância (km)</label>
-        <input type="number" id="distance-input" placeholder="Digite a distância" value="430">
+        <input
+          type="number"
+          id="distance-input"
+          placeholder="430"
+          disabled
+        />
+
         <div class="checkbox-group">
-          <input type="checkbox" id="manual-distance-checkbox">
-          <label for="manual-distance-checkbox">Inserir distância manualmente</label>
+          <input type="checkbox" id="manual-distance-checkbox" />
+          <label for="manual-distance-checkbox">
+            Inserir distância manualmente
+          </label>
         </div>
       </div>
 
       <div class="form-group">
         <label>Meio de Transporte</label>
+
         <div class="transport-selector">
           <button class="transport-option" data-transport="bicycle">
-            <img src="assets/icons/bike.png" alt="Bicicleta">
+            <img src="assets/icons/bike.png" />
             <span>Bicicleta</span>
           </button>
+
           <button class="transport-option" data-transport="car">
-            <img src="assets/icons/carro.png" alt="Carro">
+            <img src="assets/icons/carro.png" />
             <span>Carro</span>
           </button>
+
           <button class="transport-option selected" data-transport="bus">
-            <img src="assets/icons/bus.png" alt="Ônibus">
+            <img src="assets/icons/bus.png" />
             <span>Ônibus</span>
           </button>
+
           <button class="transport-option" data-transport="truck">
-            <img src="assets/icons/truck.png" alt="Caminhão">
+            <img src="assets/icons/truck.png" />
             <span>Caminhão</span>
           </button>
         </div>
       </div>
 
-      <button class="calc-button" id="calc-button">Calcular Emissões</button>
+      <!-- BOTÃO CALCULAR ROTA -->
+      <button class="calc-button secondary" id="route-button">
+        Calcular Rota
+      </button>
+
+      <!-- BOTÃO CALCULAR EMISSÕES -->
+      <button class="calc-button" id="calc-button" disabled>
+        Calcular Emissões
+      </button>
     </section>
 
-    <!-- ========== RESULTADOS ==========-->
-    <section class="results-section" id="results-section">
-      <h2>Resultados da Emissão</h2>
+    <!-- ========== RESULTADOS ========== -->
+    <section class="results-section">
 
-      <div class="summary-cards">
-        <div class="card">
-          <div class="card-label">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            Rota
-          </div>
-          <div class="card-value" id="route-text">São Paulo, SP → Rio de Janeiro, RJ</div>
-        </div>
+      <h2>Resultado da Viagem</h2>
 
-        <div class="card">
-          <div class="card-label">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            Distância
-          </div>
-          <div class="card-value" id="distance-text">430 km</div>
-        </div>
+      <p id="route-text">—</p>
+      <p id="distance-text">—</p>
 
-        <div class="card green">
-          <div class="card-label">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
-            </svg>
-            Emissão de CO₂
-          </div>
-          <div class="card-value" id="emission-text">38,27 kg</div>
-          <div class="card-subtext" id="emission-note">Ônibus</div>
-        </div>
-
-        <div class="card">
-          <div class="card-label">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="12 7 12 12 16 14"></polyline>
-              <circle cx="12" cy="12" r="9"></circle>
-            </svg>
-            Economia vs Carro
-          </div>
-          <div class="card-value" id="economy-text">13,33 kg</div>
-          <div class="card-subtext" id="economy-percentage">25,83% menos emissões</div>
-        </div>
+      <div class="result-card">
+        <strong id="emission-text">0 kg CO₂</strong>
+        <span id="emission-note">—</span>
       </div>
+
+      <div class="economy">
+        <span id="economy-text">0 kg</span>
+        <small id="economy-percentage">—</small>
+      </div>
+
     </section>
 
-    <!-- ========== COMPARATIVO ==========-->
+    <!-- ========== COMPARATIVO ========== -->
     <section class="comparative-section">
-      <h2>Comparativo por Transporte</h2>
+      <h2>Comparação entre Transportes</h2>
       <div id="comparative-container"></div>
-      <div class="help-box" style="margin-top: 20px;">
-        <div class="help-box-icon">ℹ️</div>
-        <div class="help-box-content">
-          <h4>Dica: Escolha meios de transporte mais sustentáveis</h4>
-          <p>Ajuda a reduzir significativamente as emissões de CO₂ e contribui para um planeta mais saudável!</p>
-        </div>
-      </div>
     </section>
 
-    <!-- ========== CRÉDITOS DE CARBONO ==========-->
+    <!-- ========== CRÉDITOS DE CARBONO ========== -->
     <section class="carbon-section">
       <h2>Créditos de Carbono</h2>
 
-      <div class="carbon-cards">
-        <div class="carbon-metric">
-          <div class="carbon-metric-label">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
-            </svg>
-            Créditos Necessários
-          </div>
-          <div class="carbon-metric-value" id="credits-text">0,0382</div>
-          <div class="carbon-metric-subtext">1 crédito = 1000 kg CO₂</div>
-        </div>
+      <p>
+        Créditos necessários:
+        <strong id="credits-text">0</strong>
+      </p>
 
-        <div class="carbon-metric">
-          <div class="carbon-metric-label">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
-            </svg>
-            Custo Estimado
-          </div>
-          <div class="carbon-metric-value" id="cost-text">R$ 0,46</div>
-          <div class="carbon-metric-subtext" id="cost-range">Variação: R$ 0,23 - R$ 0,69</div>
-        </div>
-      </div>
+      <p>
+        Custo estimado:
+        <strong id="cost-text">R$ 0,00</strong>
+      </p>
 
-      <div class="help-box">
-        <div class="help-box-icon">❓</div>
-        <div class="help-box-content">
-          <h4>O que são Créditos de Carbono?</h4>
-          <p>Créditos de carbono são certificados que representam a redução de uma tonelada de CO₂ da atmosfera. Ao comprar créditos, você compensa suas emissões financiando projetos de preservação ambiental, reflorestamento e energia renovável.</p>
-        </div>
-      </div>
-
-      <button class="compensate-button" id="compensate-button">Compensar Emissões</button>
+      <small id="cost-range"></small>
     </section>
+
   </main>
 
-  <!-- ========== LOADER ==========-->
-  <div id="loader">
+  <!-- ========== LOADER ========== -->
+  <div id="loader" style="display: none">
     <div class="spinner"></div>
     <span>Calculando...</span>
   </div>
 
-  <!-- ========== SCRIPTS ==========-->
-  <!-- Callback para quando Google Maps carregar -->
-  <script>
-    window.initMapCallback = function() {
-      console.log('=== [CALLBACK] Google Maps Script Carregou ===');
-      console.log('window.google:', !!window.google);
-      console.log('window.google.maps:', !!(window.google && window.google.maps));
-      console.log('window.google.maps.places:', !!(window.google && window.google.maps && window.google.maps.places));
-      if (typeof window.initMap === 'function') {
-        try { window.initMap(); } catch (e) { console.warn('initMap erro:', e); }
-      }
-    };
-  </script>
-
-  <!-- Google Maps JS API com callback (melhor carregar com async+defer ou usar o API Loader) -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6TUALMOkT0hPnp9bxPB-GuLato_mcoU&libraries=places&callback=initMapCallback"></script>
-
-  <!-- Verificação com timeout: se Maps/Places não carregar em 8s, exibe banner de erro -->
-  <script>
-    (function() {
-      const CHECK_MS = 8000;
-      function showBanner() {
-        const b = document.getElementById('maps-error-banner');
-        if (!b) return;
-        b.style.display = 'block';
-        const btn = document.getElementById('maps-error-dismiss');
-        if (btn) btn.addEventListener('click', () => b.style.display = 'none');
-        console.error('===== GOOGLE MAPS NÃO CARREGOU APÓS ' + CHECK_MS + 'ms =====');
-        console.error('PRÓXIMAS AÇÕES:');
-        console.error('1. Abra a aba Network (F12)');
-        console.error('2. Procure pela URL com "googleapis.com"');
-        console.error('3. Verifique o Status HTTP (401 = chave inválida, 403 = referrer bloqueado)');
-        console.error('4. Se Status for 200, verifique o Console para mensagens de erro (ApiKeyInvalid, RefererNotAllowed, etc)');
-      }
-
-      setTimeout(() => {
-        if (!(window.google && window.google.maps && window.google.maps.places)) {
-          showBanner();
-        } else {
-          console.log('✓ Google Maps/Places carregado com sucesso!');
-        }
-      }, CHECK_MS);
-    })();
-  </script>
-
+  <!-- ========== SCRIPTS ========== -->
   <script src="js/routes-data.js"></script>
   <script src="js/config.js"></script>
   <script src="js/calculator.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/distance-api.js"></script>
   <script src="js/app.js"></script>
+
 </body>
 </html>

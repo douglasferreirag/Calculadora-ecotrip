@@ -1,73 +1,80 @@
-// Lógica de cálculos (funções globais)
+// ================= CALCULATOR.JS =================
 const calculator = {
-  /**
-   * Calcula emissões de CO2 para um transporte
-   * @param {number} distance - distância em km
-   * @param {string} transport - tipo de transporte (bicycle, car, bus, truck)
-   * @returns {number} emissão em kg CO2
-   */
-  calculateEmission(distance, transport) {
-    const emission = config.co2Emissions[transport] || 0;
-    return parseFloat((distance * emission).toFixed(2));
+
+  // Fatores de emissão (kg CO2 por km)
+  emissionFactors: {
+    bicycle: 0,
+    bus: 0.089,
+    car: 0.192,
+    truck: 0.27
   },
 
   /**
-   * Calcula todas as emissões para comparação
-   * @param {number} distance - distância em km
-   * @returns {object} emissões por transporte
+   * Calcula emissão para um transporte específico
+   */
+  calculateEmission(distance, transport) {
+    const factor = this.emissionFactors[transport] || 0;
+    return distance * factor;
+  },
+
+  /**
+   * Calcula emissão para todos os transportes
    */
   calculateAllEmissions(distance) {
+    const result = {};
+
+    Object.keys(this.emissionFactors).forEach(transport => {
+      result[transport] = this.calculateEmission(distance, transport);
+    });
+
+    return result;
+  },
+
+  /**
+   * Calcula economia em relação ao carro
+   */
+  calculateSavings(selectedEmission, carEmission) {
+    if (carEmission === 0) {
+      return { savings: 0, percentage: 0 };
+    }
+
+    const savings = carEmission - selectedEmission;
+    const percentage = (savings / carEmission) * 100;
+
     return {
-      bicycle: this.calculateEmission(distance, 'bicycle'),
-      car: this.calculateEmission(distance, 'car'),
-      bus: this.calculateEmission(distance, 'bus'),
-      truck: this.calculateEmission(distance, 'truck')
+      savings: Math.abs(savings).toFixed(2),
+      percentage: Math.abs(percentage).toFixed(2)
     };
   },
 
   /**
-   * Calcula percentual relativo ao carro
-   * @param {number} emission - emissão em kg
-   * @param {number} carEmission - emissão do carro
-   * @returns {number} percentual (0-100 ou mais)
+   * Percentual relativo em relação ao carro
    */
   calculateRelativePercentage(emission, carEmission) {
     if (carEmission === 0) return 0;
-    return parseFloat(((emission / carEmission) * 100).toFixed(2));
+    return (emission / carEmission) * 100;
   },
 
   /**
-   * Calcula economia vs carro
-   * @param {number} transportEmission - emissão do transporte
-   * @param {number} carEmission - emissão do carro
-   * @returns {object} { savings, percentage }
+   * ✅ MÉTODO QUE ESTAVA FALTANDO
+   * Calcula créditos de carbono (1 crédito = 1 tonelada CO₂)
    */
-  calculateSavings(transportEmission, carEmission) {
-    const savings = parseFloat((carEmission - transportEmission).toFixed(2));
-    const percentage = carEmission > 0 
-      ? parseFloat(((savings / carEmission) * 100).toFixed(2))
-      : 0;
-    return { savings, percentage };
+  calculateCarbonCredits(emissionKg) {
+    return emissionKg / 1000;
   },
 
   /**
-   * Calcula créditos de carbono necessários
-   * @param {number} emission - emissão total em kg
-   * @returns {number} número de créditos (fracionado)
-   */
-  calculateCarbonCredits(emission) {
-    return parseFloat((emission / config.carbonCreditKg).toFixed(4));
-  },
-
-  /**
-   * Calcula custo estimado
-   * @param {number} credits - número de créditos
-   * @returns {object} { base, min, max }
+   * Cálculo de custo estimado dos créditos
    */
   calculateCost(credits) {
-    const baseCost = parseFloat((credits * config.carbonCreditCost).toFixed(2));
-    const minCost = parseFloat((credits * config.priceRange.min).toFixed(2));
-    const maxCost = parseFloat((credits * config.priceRange.max).toFixed(2));
-    return { base: baseCost, min: minCost, max: maxCost };
+    const base = credits * 50; // R$ 50 por crédito
+    return {
+      base,
+      min: base * 0.8,
+      max: base * 1.2
+    };
   }
 };
+
+// Expor globalmente
+window.calculator = calculator;
